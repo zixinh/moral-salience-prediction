@@ -4,13 +4,14 @@ from collections import OrderedDict
 from twython import Twython
 import time
 
-#Fill your Twitter API key and access token below
-#Information can be found on the Twitter developer website:
-#https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens.html
-consumer_key=''
-consumer_secret=''
-access_token_key=''
-access_token_secret=''
+# Fill your Twitter API key and access token below
+# Information can be found on the Twitter developer website:
+# https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens.html
+consumer_key = "Lvr0ogew5leEc250OllZwhrUM"
+consumer_secret = "sZwhTVWgwFndyd5bnThP59Hh1ilkafEdZ4Tq0uCoYuEbJM3YRD"
+access_token_key = "792597086088732672-xRZJV7AkVp2PmoP0gAcG497CAJmFDZj"
+access_token_secret = "6aRC79cBNvwFehYxhmV4wtsXuQo4CECR6qH171btfPKLE"
+
 
 def parse(input, output, corpus_name="all"):
     try:
@@ -22,57 +23,72 @@ def parse(input, output, corpus_name="all"):
     counter = 0
 
     for d in data:
-        if((corpus_name != "all") and (corpus_name != d["Corpus"])):
+        if (corpus_name != "all") and (corpus_name != d["Corpus"]):
             continue
-        #Skip over corpus without tweet ID's
-        if(d["Corpus"] == "Davidson"):
-            if(corpus_name == "Davidson"):
-                print("Tweet text is not availble for the Davidson corpus. "
-                      "You can use the tweet_ids and retrieve the text from "
-                      "https://raw.githubusercontent.com/t-davidson/hate-speech-and-offensive-language/master/data/labeled_data.csv")
+        # Skip over corpus without tweet ID's
+        if d["Corpus"] == "Davidson":
+            if corpus_name == "Davidson":
+                print(
+                    "Tweet text is not availble for the Davidson corpus. "
+                    "You can use the tweet_ids and retrieve the text from "
+                    "https://raw.githubusercontent.com/t-davidson/hate-speech-and-offensive-language/master/data/labeled_data.csv"
+                )
             continue
         for t in d["Tweets"]:
             id = t["tweet_id"]
-            #retrieves tweet text if available
+            # retrieves tweet text if available
             try:
-                print("here")
+                print("processing tweet #", counter)
                 text, date = call_twitter_api(id)
                 t["tweet_text"] = text
                 t["date"] = date
             except:
-                t["tweet_text"] = 'no tweet text available'
-                t["date"] = 'no date available'
+                print("tweet not available")
+                t["tweet_text"] = "no tweet text available"
+                t["date"] = "no date available"
 
-            #increment counter
+            # increment counter
             counter += 1
 
-            #In order to deal with the Twitter API access limits
-            if counter == 900:
-                print("Twitter API has timed out. Waiting 15 minutes before resuming script")
+            # In order to deal with the Twitter API access limits
+            if counter % 900 == 0:
+                print(
+                    "Twitter API has timed out. Waiting 15 minutes before resuming script"
+                )
                 time.sleep(900)
 
-            #reodering the json elements
+            # reodering the json elements
             temp = t["annotations"]
             t.pop("annotations")
             t["annotations"] = temp
 
     check = False
-    if(corpus_name != "all"):
+    if corpus_name != "all":
         for d in data:
-            if(d["Corpus"] == corpus_name):
+            if d["Corpus"] == corpus_name:
                 data = d
                 check = True
                 break
-        if(check == False):
+        if check == False:
             print("Please enter a valid corpus name")
 
-    with open(output, 'w') as outfile:
-        json.dump(data, outfile, indent = 4)
+    with open(output, "w") as outfile:
+        json.dump(data, outfile, indent=4)
+
 
 def call_twitter_api(id):
-    twitter = Twython(consumer_key, consumer_secret, access_token_key, access_token_secret)
+    twitter = Twython(
+        consumer_key, consumer_secret, access_token_key, access_token_secret
+    )
     tweet = twitter.show_status(id=id)
-    return tweet['text'], tweet['created_at']
+    print(
+        "Average Accuracy: {0:.2f}, Loss: {1:.2f}, Time elapsed: {2:.2f}".format(
+            avg_val_accuracy, avg_val_loss, validation_time
+        )
+    )
+
+    return tweet["text"], tweet["created_at"]
+
 
 if __name__ == "__main__":
     try:
@@ -81,6 +97,8 @@ if __name__ == "__main__":
         try:
             parse(sys.argv[1], sys.argv[2])
         except Exception:
-            print("Please use the following command to run: "
-                  "python text_script.py <inputfile> <outputfile> <OPTIONAL corpusname>")
+            print(
+                "Please use the following command to run: "
+                "python text_script.py <inputfile> <outputfile> <OPTIONAL corpusname>"
+            )
             exit(1)
