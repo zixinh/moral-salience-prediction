@@ -7,10 +7,10 @@ import time
 # Fill your Twitter API key and access token below
 # Information can be found on the Twitter developer website:
 # https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens.html
-consumer_key = "Lvr0ogew5leEc250OllZwhrUM"
-consumer_secret = "sZwhTVWgwFndyd5bnThP59Hh1ilkafEdZ4Tq0uCoYuEbJM3YRD"
-access_token_key = "792597086088732672-xRZJV7AkVp2PmoP0gAcG497CAJmFDZj"
-access_token_secret = "6aRC79cBNvwFehYxhmV4wtsXuQo4CECR6qH171btfPKLE"
+consumer_key = ""
+consumer_secret = ""
+access_token_key = ""
+access_token_secret = ""
 
 
 def parse(input, output, corpus_name="all"):
@@ -81,12 +81,6 @@ def call_twitter_api(id):
         consumer_key, consumer_secret, access_token_key, access_token_secret
     )
     tweet = twitter.show_status(id=id)
-    print(
-        "Average Accuracy: {0:.2f}, Loss: {1:.2f}, Time elapsed: {2:.2f}".format(
-            avg_val_accuracy, avg_val_loss, validation_time
-        )
-    )
-
     return tweet["text"], tweet["created_at"]
 
 
