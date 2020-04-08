@@ -14,7 +14,7 @@ You can acquire customer/access tokens/secrets from [here](https://themepacific.
 
 You can acquire iaic, maic, iamc, mamc datasets from Data_Preprocessing.ipynb, following blocks started with comments '#DATASET1,2,3,4'.
 
-# Model
+## Model
 We implemented BERT model to test our hypothesis and models are available in ./models.
 
 ## Resources
